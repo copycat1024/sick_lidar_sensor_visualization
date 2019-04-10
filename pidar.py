@@ -93,33 +93,40 @@ class CoLaBPacket:
         if raw_data[0] != 2 and raw_data[-1] != 3:
             raise Exception('Wrong data type')
         args = [x.decode('UTF-8') for x in raw_data[1:-1].split(b' ')]
-        self.type = args[0]
-        self.command = args[1]
+
+        self._i = -1
+        self._data = args
+
+        self.type = self.next()
+        self.command = self.next()
         if self.type == 'sRA' and self.command == 'LMDscandata':
 
             f = open("scandata.bin","wb")
             f.write(bytearray(raw_data))
 
-            self.version_number = args[2]
+            self.version_number = self.next()
 
-            self.device_number = args[3]
-            self.serial_number = args[4]
-            self.device_status = args[5:7]
+            self.device_number = self.next()
+            self.serial_number = self.next()
+            self.device_status = [self.next(), self.next()]
 
-            self.telegram_counter = args[7]
-            self.scan_counter = args[8]
-            self.time_since_startup_in_us = args[9]
-            self.time_of_transmission = args[10]
-            self.status_of_digital_input = args[11:12]
-            self.status_of_digital_output = args[13:15]
-            self.layer_angle = args[15]
+            self.telegram_counter = self.next()
+            self.scan_counter = self.next()
+            self.time_since_startup_in_us = self.next()
+            self.time_of_transmission = self.next()
+            self.status_of_digital_input = [self.next(), self.next()]
+            self.status_of_digital_output = [self.next(), self.next()]
+            self.layer_angle = self.next()
 
-            self.scan_frequency = args[16]
-            self.measurement_frequency = args[17]
+            self.scan_frequency = self.next()
+            self.measurement_frequency = self.next()
 
-            self.amount_of_encoder = args[18]
+            self.amount_of_encoder = self.next_int()
+            if self.amount_of_encoder > 0:
+                self.encoder_position = self.next()
+                self.encoder_speed = self.next()
 
-            self.amount_of_channel = args[19]
+            self.amount_of_channel = self.next()
 
             # self.data = ''
             # for i in range(3, 24):
@@ -127,8 +134,16 @@ class CoLaBPacket:
         else:
             self.data = args[2:]
 
+    def next(self):
+        self._i += 1
+        return self._data[self._i]
+
+    def next_int(self):
+        return int(self.next(), 16)
+
     def print(self):
         for key, value in self.__dict__.items():
-            print('{} : {}'.format(key.capitalize().replace('_', ' '), value))
+            if key[0] != '_':
+                print('{} : {}'.format(key.capitalize().replace('_', ' '), value))
 
         print()
