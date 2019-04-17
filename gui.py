@@ -1,19 +1,22 @@
-from graphics import GraphWin, Circle, Text, Point
+from gfx import gfxMain
+from pidar import MRS6000
+from time import sleep
+
+PIDAR_IP = '192.168.69.245'
+PIDAR_PORT = 2111
 
 def main():
-    win = GraphWin('Lidar', 600, 400)  # give title and dimensions
+    sensor = MRS6000(PIDAR_IP, PIDAR_PORT)
 
-    head = Circle(Point(40, 100), 25)  # set center and radius
-    head.setFill("yellow")
-    head.draw(win)
-
-    label = Text(Point(100, 120), 'A face')
-    label.draw(win)
-
-    message = Text(Point(win.getWidth()/2, 20), 'Click anywhere to quit.')
-    message.draw(win)
-    win.getMouse()
-    win.close()
+    gfx = gfxMain()
+    gfx.init_cone(sensor.scan_angle())
+    sensor.start_scan()
+    while gfx.running:
+        print('loop')
+        gfx.draw(sensor.scan_result())
+        sleep(0.1)
+    sensor.end_scan()
 
 
-main()
+if __name__ == '__main__':
+    main()

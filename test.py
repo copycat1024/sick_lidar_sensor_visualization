@@ -12,6 +12,7 @@ def prompt(txt):
 if __name__ == '__main__':
     cmd = [x[0] for x in inspect.getmembers(MRS6000) if x[0][0] != '_']
     sensor = MRS6000(PIDAR_IP, PIDAR_PORT)
+    
     try:
         prompt('> ')
         for line in sys.stdin:
