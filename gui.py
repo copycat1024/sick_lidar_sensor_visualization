@@ -12,7 +12,6 @@ def main():
     gfx.init_cone(sensor.scan_angle())
     sensor.start_scan()
     while gfx.running:
-        print('loop')
         gfx.draw(sensor.scan_result())
         sleep(0.1)
     sensor.end_scan()
