@@ -38,8 +38,8 @@ class MRS6000:
         self._send(b'sMN Run')
         self._recv()
 
-    def scan_angle(self):
-        self._send(b'sRN LMPoutputRange ')
+    def get_output_range(self):
+        self._send(b'sRN LMPoutputRange')
         return self._recv()
 
     def start_scan(self):
