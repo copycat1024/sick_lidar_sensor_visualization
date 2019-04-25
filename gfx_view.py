@@ -1,16 +1,54 @@
 from tkinter import Tk, Canvas, Frame, BOTH, ARC, PIESLICE
 from math import sin, cos, pi, tan
 
+# color
+WARNING = '#ff0'
+DANGER = '#f44'
+SAFE = '#4f4'
 
 class gfxView():
     def __init__(self, tk, model):
-        tk.title('Lidar')
+        tk.title('Lidar. IP: {}. Port: {}'.format(model.ip, model.port))
         tk.geometry('800x600+10+10')
 
-        # radius
-        self.R = 400
+        self.canvas = Canvas(tk)
+        self.canvas.pack(fill=BOTH, expand=1)
+        self.model = model
+
+    # view the window at the start
+    def view_first(self):
+        self.prepare_view()
+        self.rec(*self.frame, fill='white', outline='')
+        self.draw_frame()
+        for zone, color in self.model.detect_zones:
+            self.rec_zone(zone, fill=color)
+        self.draw_grid()
+
+    # view result of a scan
+    def view_scan(self):
+        self.prepare_view()
+        self.draw_bg()
+        self.draw_zones()
+        self.draw_grid()
+        self.draw_frame()
+        self.draw_data()
+
+    def prepare_view(self):
+        # get canvas size
+        H = self.canvas.winfo_height()
+        W = self.canvas.winfo_width()
+
         # margin
-        self.M = 30
+        self.M = self.model.margin
+
+        # spagetti sauce
+        H -= self.M
+
+        # radius
+        if 2*H > W:
+            self.R = W/2
+        else:
+            self.R = H
 
         # center of sensor view
         self.x0 = self.R
@@ -20,50 +58,20 @@ class gfxView():
         # frame of sensor view
         self.frame = (self.M, self.M, 2*self.R-self.M, self.R)
 
-        self.canvas = Canvas(tk)
-        self.canvas.pack(fill=BOTH, expand=1)
-        self.model = model
-
         # scale_factor
         self.scale = (self.R-self.M) / self.model.max
 
-    # view the window at the start
-    def view_first(self):
+        # clear canvas
         self.canvas.delete('all')
-        self.rec(*self.frame, fill='white', outline='')
-        self.draw_frame()
-        for zone in self.model.zones:
-            self.rec_zone(zone, fill='#ff0')
-        self.draw_grid()
-
-    # view result of a scan
-    def view_scan(self):
-        self.canvas.delete('all')
-        self.draw_bg()
-        self.draw_zones()
-        self.draw_data()
 
     # draw the background
     def draw_bg(self):
         self.rec(*self.frame, fill='white', outline='')
         self.draw_cone(*self.model.angle, self.model.min)
-        self.draw_grid()
-        self.draw_frame()
 
     # draw the detecting zone
     def draw_zones(self):
-        points = list()
-        for value, angle in self.model.data:
-            phi = deg2rad(angle)
-            x = value*cos(phi)
-            y = value*sin(phi)
-            points.append((x, y))
-        for zone in self.model.zones:
-            count = 0
-            for p in points:
-                if in_rec(*p, *zone):
-                    count += 1
-            color = '#f44' if count > 4 else '#4f4'
+        for zone, color in self.model.zones:
             self.rec_zone(zone, fill=color)
 
     # draw the data points
@@ -73,7 +81,7 @@ class gfxView():
             v = value * self.scale
             x, y = self.pol2car(v, phi)
             if in_rec(x, y, *self.frame):
-                self.point(x, y, outline='', fill='#c00')
+                self.point(x, y, outline='', fill='blue')
 
     # draw the frame of the sensor view
     def draw_frame(self):
@@ -97,7 +105,7 @@ class gfxView():
         if in_range(x0, p1, p0):
             poly.extend((x0, y0))
         poly.extend((xp1, yp1))
-        self.canvas.create_polygon(*poly, fill='#80c1ff')
+        self.canvas.create_polygon(*poly, fill=self.model.detect_color)
         self.arc(min*self.scale, a0, a1, style=PIESLICE,
                  fill='white', outline='')
 

@@ -4,11 +4,11 @@ from gfx_view import gfxView
 from gfx_model import gfxModel
 
 class gfxControl():
-    def __init__(self):
+    def __init__(self, config):
         self.tk = Tk()
         self.tk.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-        self.model = gfxModel()
+        self.model = gfxModel(config)
         self.view = gfxView(self.tk, self.model)
 
         self.running = True
@@ -22,6 +22,8 @@ class gfxControl():
         self.tk.update()
 
     def draw_first(self):
+        self.tk.update_idletasks()
+        self.tk.update()
         self.view.view_first()
         self.tk.update_idletasks()
         self.tk.update()
