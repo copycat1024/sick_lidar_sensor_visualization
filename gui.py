@@ -19,6 +19,7 @@ def main():
     gfx.draw_first()
     sensor = MRS6000(PIDAR_IP, PIDAR_PORT)
 
+    sensor.config()
     sensor.start_scan()
 
     alarm = Thread()
