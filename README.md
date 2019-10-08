@@ -1,4 +1,4 @@
-# pidar_laser_sensor
+# SICK Pidar Laser Sensor for railway
 
 ## Introduction
 ![Visualization](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.jpg)
