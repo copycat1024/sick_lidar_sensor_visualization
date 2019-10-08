@@ -1,16 +1,16 @@
 # pidar_laser_sensor
 
 ## Introduction
-![Visualization](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.png)
+![Visualization](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.jpg)
 
 This project use a Lidar laser sensor to detect if someone come too close to a railway.
 
 ## Scenarios
-![Normal scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.png)
+![Normal scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/normal.png)
 Normal scenarios
-![Warning scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.png)
+![Warning scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/warning.png)
 Warning scenarios
-![Danger scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/visualization.png)
+![Danger scenarios](https://raw.githubusercontent.com/copycat1024/sick_lidar_sensor_visualization/master/pictures/danger.png)
 Danger scenarios
 
 ## Installation
